@@ -1,0 +1,156 @@
+---
+import { getImage } from "astro:assets"
+
+import Layout from "~/layouts/Layout.astro"
+
+import cameraStaticAsset from "~/assets/camera-static.gif"
+import starsAsset from "~/assets/stars.jpg"
+
+const cameraStatic = (
+  await getImage({
+    src: cameraStaticAsset,
+  })
+).src
+
+const stars = (
+  await getImage({
+    src: starsAsset,
+  })
+).src
+---
+
+<Layout title="Live Station Feed">
+  <div
+    id="stars"
+    class="fixed top-0 -z-50 h-screen w-screen opacity-50"
+    style={`background-image: url('${stars}'); background-size: 900px;`}
+  >
+  </div>
+  <img
+    id="galaxy"
+    src="/galaxy.png"
+    alt=""
+    class="absolute left-1/2 top-1/2 -z-50 max-w-[70%] -translate-x-1/2 -translate-y-1/2"
+  />
+  <div
+    id="camera-static"
+    class="pointer-events-none fixed top-0 -z-40 h-screen w-screen animate-static-opacity opacity-10"
+    style={`background-image: url('${cameraStatic}'); background-size: 1050px;`}
+  >
+  </div>
+  <main
+    class="absolute left-1/2 top-1/2 z-10 h-full w-full -translate-x-1/2 -translate-y-1/2 border-white p-10"
+  >
+    <div id="camera-outer" class="relative h-full w-full border *:absolute">
+      <div class="left-0 top-0 size-1/6 border-l-4 border-t-4"></div>
+      <div class="right-0 top-0 size-1/6 border-r-4 border-t-4"></div>
+      <div class="bottom-0 left-0 size-1/6 border-b-4 border-l-4"></div>
+      <div class="bottom-0 right-0 size-1/6 border-b-4 border-r-4"></div>
+      <div class="relative h-full w-full">
+        <div class="absolute left-8 top-8 flex flex-col">
+          <h1 class="mb-2 text-xl">LIVE STATION FEED</h1>
+          <span id="camera-status">Status: OK</span>
+          <span>Anomalies: 0</span>
+        </div>
+        <div class="absolute left-1/2 top-8 w-2/5 -translate-x-1/2">
+          <div class="flex border-t-2 w-full justify-between">
+            <div class="h-8 w-0.5 bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-8 w-0.5 bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-8 w-0.5 bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-4 w-px bg-white"></div>
+            <div class="h-8 w-0.5 bg-white"></div>
+          </div>
+        </div>
+        <div class="absolute top-1/2 right-8 h-1/2 -translate-y-1/2">
+          <div class="flex flex-col items-end border-r-2 h-full justify-between">
+            <div class="w-8 h-0.5 bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-8 h-0.5 bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-8 h-0.5 bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-4 h-px bg-white"></div>
+            <div class="w-8 h-0.5 bg-white"></div>
+          </div>
+        </div>
+        <div class="absolute right-8 top-8 flex flex-col text-right">
+          <h1 class="mb-2 text-xl">CAMERA 19</h1>
+          <span id="camera-zoom">Zoom: 32%</span>
+          <span id="camera-fps">FPS: N/A</span>
+        </div>
+      </div>
+    </div>
+    <div
+      id="camera-inner"
+      class="absolute left-1/2 top-1/2 z-10 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 border-white *:absolute *:size-1/6"
+    >
+      <div class="left-0 top-0 border-l-2 border-t-2"></div>
+      <div class="right-0 top-0 border-r-2 border-t-2"></div>
+      <div class="bottom-0 left-0 border-b-2 border-l-2"></div>
+      <div class="bottom-0 right-0 border-b-2 border-r-2"></div>
+    </div>
+  </main>
+  <script>
+    const cameraStatus = document.getElementById("camera-status")!
+    const cameraFps = document.getElementById("camera-fps")!
+
+    const updateCameraStatus = () => {
+      setTimeout(() => {
+        cameraStatus.textContent = "Status: CONNECTION ISSUES"
+      }, 8_000)
+
+      setTimeout(() => {
+        cameraStatus.textContent = "Status: OK"
+      }, 10_000)
+    }
+
+    const updateCameraFps = () => {
+      let frameCount = 0
+      let lastTime = performance.now()
+      let fps
+
+      const countFrames = () => {
+        frameCount++
+
+        const currentTime = performance.now()
+        const deltaTime = currentTime - lastTime
+
+        if (deltaTime > 1_000) {
+          fps = frameCount
+          frameCount = 0
+          lastTime = currentTime
+
+          cameraFps.textContent = `FPS: ${fps}`
+        }
+
+        requestAnimationFrame(countFrames)
+      }
+
+      countFrames()
+    }
+
+    updateCameraStatus()
+    setTimeout(updateCameraStatus, 12_000)
+
+    updateCameraFps()
+  </script>
+</Layout>

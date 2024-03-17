@@ -1,0 +1,9 @@
+.github
+.vscode
+
+node_modules
+
+**/env.d.ts
+.astro
+
+pnpm-lock.yaml

@@ -1,0 +1,96 @@
+---
+import Layout from "~/layouts/Layout.astro"
+---
+
+<Layout title="">
+  <table id="terminal" class="font-mono leading-6 my-6"></table>
+
+  <script>
+    import { prefetch } from "astro:prefetch"
+
+    const terminal = document.querySelector("#terminal")!
+
+    const wait = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms))
+
+    const randomDelay = (num: number) => Math.floor(Math.random() * num) * 100
+
+    async function main() {
+      const lines = [
+        { text: "Initiating connection sequence ...", delay: 500 },
+
+        { text: "", delay: 1000 },
+        { text: "Establishing link to orbital network ...", delay: 0 },
+        { text: "- Link established.", delay: randomDelay(30) },
+
+        { text: "", delay: 1000 },
+        { text: "Verifying encryption protocols ...", delay: 0 },
+        { text: "- Encryption protocols functional.", delay: 1500 },
+
+        { text: "", delay: 2000 },
+        { text: "Transmitting data packets to orbital network...", delay: 0 },
+        { text: "- 9% transferred ...", delay: randomDelay(7) },
+        { text: "- 26% transferred ...", delay: randomDelay(7) },
+        { text: "- 27% transferred ...", delay: randomDelay(7) },
+        { text: "- 31% transferred ...", delay: randomDelay(7) },
+        { text: "- 49% transferred ...", delay: randomDelay(7) },
+        { text: "- 67% transferred ...", delay: randomDelay(7) },
+        { text: "- 71% transferred ...", delay: randomDelay(7) },
+        { text: "- 89% transferred ...", delay: randomDelay(7) },
+        { text: "- 100% transferred ...", delay: randomDelay(7) },
+        { text: "- Data packets transmitted.", delay: randomDelay(7) },
+
+        { text: "", delay: 2000 },
+        { text: "Engaging communication channels...", delay: 0 },
+        { text: "Securing telemetry feed...", delay: 2000 },
+        { text: "Accessing live station camera feed...", delay: 2000 },
+        { text: "Standby for visual transmission...", delay: 2000 },
+        { text: "Connection successful!", delay: 2000 },
+
+        { text: "", delay: 500 },
+        { text: "Press any key to open live feed.", delay: 0 },
+      ]
+
+      async function typeText(text: string) {
+        const date = new Date()
+        const time = date.toLocaleTimeString("en-GB", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        })
+
+        terminal.innerHTML += `<tr><td style="padding-left: 24px; padding-right: 24px;">${time}</td><td>${text}</td></tr>`
+      }
+
+      for (const { text, delay } of lines) {
+        await wait(delay)
+        await typeText(text)
+      }
+    }
+
+    main().finally(() => {
+      prefetch("/station")
+
+      document.addEventListener("keydown", () => {
+        window.location.href = "/station"
+      })
+
+      const date = new Date()
+      const time = date.toLocaleTimeString("en-GB", {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+
+      terminal.innerHTML += `<tr><td style="padding-left: 24px; padding-right: 24px;">${time}</td><td><input style="background: transparent; outline: none;" id="terminal-input" /></td></tr>`
+
+      const input = document.querySelector(
+        "#terminal-input",
+      ) as HTMLInputElement
+
+      input.focus()
+    })
+  </script>
+</Layout>

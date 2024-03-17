@@ -1,0 +1,64 @@
+---
+import "@fontsource/geist-mono"
+
+import { getImage } from "astro:assets"
+import { ViewTransitions } from "astro:transitions"
+
+import cameraStaticAsset from "~/assets/camera-static.gif"
+
+interface Props {
+  title: string
+}
+
+const cameraStatic = (
+  await getImage({
+    src: cameraStaticAsset,
+  })
+).src
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{Astro.props.title}</title>
+    <ViewTransitions />
+  </head>
+  <body class="bg-black font-mono text-white">
+    <div class="max-lg:hidden"><slot /></div>
+    <div class="grid h-screen w-screen place-items-center lg:hidden">
+      <div
+        id="camera-static"
+        class="pointer-events-none fixed top-0 -z-40 h-screen w-screen opacity-20"
+        style={`background-image: url('${cameraStatic}'); background-size: 1050px;`}
+      >
+      </div>
+      <main
+        class="absolute left-1/2 top-1/2 z-10 h-full w-full -translate-x-1/2 -translate-y-1/2 border-white p-10"
+      >
+        <div id="camera-outer" class="relative h-full w-full border *:absolute">
+          <div class="left-0 top-0 size-1/6 border-l-4 border-t-4"></div>
+          <div class="right-0 top-0 size-1/6 border-r-4 border-t-4"></div>
+          <div class="bottom-0 left-0 size-1/6 border-b-4 border-l-4"></div>
+          <div class="bottom-0 right-0 size-1/6 border-b-4 border-r-4"></div>
+          <div
+            class="relative flex h-full w-full flex-col items-start sm:items-center justify-center gap-4 text-left sm:text-center text-balance p-8"
+          >
+            <h1 class="mb-2 text-3xl">Device Not Supported :(</h1>
+            <p>
+              Thanks for checking out my site, sadly your device isn't big
+              enough to get the full experience. If you're on a tablet, you can try rotating your device to see the
+              desktop version.
+            </p>
+            <p>
+              I plan to work on a mobile-friendly version in the future, but
+              right now I'm focusing on the desktop version.
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
